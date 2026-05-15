@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Documentation — my-app</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#f0f9ff', 500: '#0ea5e9', 700: '#0369a1' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    pre { white-space: pre-wrap; word-break: break-all; }
+    .method-get    { background: #dcfce7; color: #166534; }
+    .method-post   { background: #dbeafe; color: #1e40af; }
+    .method-patch  { background: #fef9c3; color: #854d0e; }
+    .method-delete { background: #fee2e2; color: #991b1b; }
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <!-- Sidebar -->
+  <aside class="fixed top-0 left-0 h-full w-64 bg-gray-900 text-gray-200 flex flex-col z-10 hidden lg:flex">
+    <div class="px-6 py-6 border-b border-gray-700">
+      <h1 class="text-white font-bold text-lg">my-app</h1>
+      <p class="text-gray-400 text-xs mt-1">API Reference v1</p>
+    </div>
+    <nav class="flex-1 overflow-y-auto px-4 py-6 space-y-1 text-sm">
+      <a href="#root"       class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition">
+        <span class="method-get text-xs font-bold px-1.5 py-0.5 rounded">GET</span> Root
+      </a>
+      <p class="px-3 pt-4 pb-1 text-xs text-gray-500 uppercase tracking-widest font-semibold">Products</p>
+      <a href="#create"     class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition">
+        <span class="method-post text-xs font-bold px-1.5 py-0.5 rounded">POST</span> Create Product
+      </a>
+      <a href="#list"       class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition">
+        <span class="method-get text-xs font-bold px-1.5 py-0.5 rounded">GET</span> List Products
+      </a>
+      <a href="#get-one"    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition">
+        <span class="method-get text-xs font-bold px-1.5 py-0.5 rounded">GET</span> Get Product
+      </a>
+      <a href="#update"     class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition">
+        <span class="method-patch text-xs font-bold px-1.5 py-0.5 rounded">PATCH</span> Update Product
+      </a>
+      <a href="#delete"     class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition">
+        <span class="method-delete text-xs font-bold px-1.5 py-0.5 rounded">DEL</span> Delete Product
+      </a>
+      <p class="px-3 pt-4 pb-1 text-xs text-gray-500 uppercase tracking-widest font-semibold">Reference</p>
+      <a href="#schema"     class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition">
+        Product Schema
+      </a>
+      <a href="#validation" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition">
+        Validation Rules
+      </a>
+    </nav>
+    <div class="px-6 py-4 border-t border-gray-700 text-xs text-gray-500">
+      Base URL<br>
+      <span class="text-gray-300 break-all">https://my-app-production-f6bc.up.railway.app</span>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="lg:ml-64 min-h-screen">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white px-8 py-12">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="bg-sky-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">v1</span>
+          <span class="text-gray-400 text-sm">REST API</span>
+        </div>
+        <h1 class="text-4xl font-extrabold tracking-tight">API Documentation</h1>
+        <p class="mt-3 text-gray-300 text-lg">Complete reference for the my-app REST API.</p>
+        <div class="mt-5 inline-flex items-center gap-2 bg-gray-700 rounded-lg px-4 py-2 text-sm font-mono text-sky-300">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101"/></svg>
+          https://my-app-production-f6bc.up.railway.app
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-6 py-10 space-y-16">
+
+      <!-- ── ROOT ── -->
+      <section id="root">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="method-get text-sm font-bold px-3 py-1 rounded-full">GET</span>
+          <code class="text-xl font-mono font-semibold text-gray-900">/</code>
+        </div>
+        <p class="text-gray-600 mb-6">Health-check endpoint. Returns a greeting string. Not versioned — available directly at <code class="bg-gray-100 px-1.5 py-0.5 rounded text-sm">/</code>.</p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-gray-50 border-b border-gray-200 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Request</div>
+            <pre class="px-4 py-4 text-sm text-gray-700">curl https://my-app-production-f6bc.up.railway.app/</pre>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-green-50 border-b border-green-200 px-4 py-2 flex items-center justify-between">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Response</span>
+              <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">200 OK</span>
+            </div>
+            <pre class="px-4 py-4 text-sm text-gray-700">Hello World!</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- divider -->
+      <hr class="border-gray-200" />
+
+      <!-- ── PRODUCTS INTRO ── -->
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Products</h2>
+        <p class="text-gray-600">All product endpoints are prefixed with <code class="bg-gray-100 px-1.5 py-0.5 rounded text-sm">/v1/products</code>.</p>
+      </div>
+
+      <!-- ── CREATE ── -->
+      <section id="create">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="method-post text-sm font-bold px-3 py-1 rounded-full">POST</span>
+          <code class="text-xl font-mono font-semibold text-gray-900">/v1/products</code>
+        </div>
+        <p class="text-gray-600 mb-6">Create a new product. All fields in the request body are validated — unknown fields are rejected.</p>
+
+        <!-- Request Body Table -->
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Request Body</h3>
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm mb-6">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Field</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Type</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Required</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Constraints</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">name</td>
+                <td class="px-4 py-3 text-gray-600">string</td>
+                <td class="px-4 py-3"><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">required</span></td>
+                <td class="px-4 py-3 text-gray-500">Non-empty string</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">price</td>
+                <td class="px-4 py-3 text-gray-600">number</td>
+                <td class="px-4 py-3"><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">required</span></td>
+                <td class="px-4 py-3 text-gray-500">≥ 0</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">description</td>
+                <td class="px-4 py-3 text-gray-600">string</td>
+                <td class="px-4 py-3"><span class="bg-gray-100 text-gray-600 text-xs font-semibold px-2 py-0.5 rounded-full">optional</span></td>
+                <td class="px-4 py-3 text-gray-500">—</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">isActive</td>
+                <td class="px-4 py-3 text-gray-600">boolean</td>
+                <td class="px-4 py-3"><span class="bg-gray-100 text-gray-600 text-xs font-semibold px-2 py-0.5 rounded-full">optional</span></td>
+                <td class="px-4 py-3 text-gray-500">Defaults to <code class="bg-gray-100 px-1 rounded">true</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-gray-50 border-b border-gray-200 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Request</div>
+            <pre class="px-4 py-4 text-sm text-gray-700">curl -X POST \
+  https://my-app-production-f6bc.up.railway.app/v1/products \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "MacBook Pro",
+    "price": 1999,
+    "description": "Fast laptop",
+    "isActive": true
+  }'</pre>
+          </div>
+          <div class="space-y-4">
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+              <div class="bg-green-50 border-b border-green-200 px-4 py-2 flex items-center justify-between">
+                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Success</span>
+                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">201 Created</span>
+              </div>
+              <pre class="px-4 py-4 text-sm text-gray-700">{
+  "_id": "6650a1f2e4b0a1c2d3e4f5a6",
+  "name": "MacBook Pro",
+  "price": 1999,
+  "description": "Fast laptop",
+  "isActive": true,
+  "createdAt": "2026-05-15T10:00:00.000Z",
+  "updatedAt": "2026-05-15T10:00:00.000Z",
+  "__v": 0
+}</pre>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+              <div class="bg-red-50 border-b border-red-200 px-4 py-2 flex items-center justify-between">
+                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Validation Error</span>
+                <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">400 Bad Request</span>
+              </div>
+              <pre class="px-4 py-4 text-sm text-gray-700">{
+  "statusCode": 400,
+  "message": [
+    "name must be a string",
+    "price must not be less than 0"
+  ],
+  "error": "Bad Request"
+}</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── LIST ── -->
+      <section id="list">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="method-get text-sm font-bold px-3 py-1 rounded-full">GET</span>
+          <code class="text-xl font-mono font-semibold text-gray-900">/v1/products</code>
+        </div>
+        <p class="text-gray-600 mb-6">Retrieve all products. Returns an empty array <code class="bg-gray-100 px-1.5 py-0.5 rounded text-sm">[]</code> when no products exist.</p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-gray-50 border-b border-gray-200 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Request</div>
+            <pre class="px-4 py-4 text-sm text-gray-700">curl https://my-app-production-f6bc.up.railway.app/v1/products</pre>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-green-50 border-b border-green-200 px-4 py-2 flex items-center justify-between">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Response</span>
+              <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">200 OK</span>
+            </div>
+            <pre class="px-4 py-4 text-sm text-gray-700">[
+  {
+    "_id": "6650a1f2e4b0a1c2d3e4f5a6",
+    "name": "MacBook Pro",
+    "price": 1999,
+    "description": "Fast laptop",
+    "isActive": true,
+    "createdAt": "2026-05-15T10:00:00.000Z",
+    "updatedAt": "2026-05-15T10:00:00.000Z",
+    "__v": 0
+  }
+]</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── GET ONE ── -->
+      <section id="get-one">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="method-get text-sm font-bold px-3 py-1 rounded-full">GET</span>
+          <code class="text-xl font-mono font-semibold text-gray-900">/v1/products/:id</code>
+        </div>
+        <p class="text-gray-600 mb-6">Retrieve a single product by its MongoDB ObjectId.</p>
+
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Path Parameters</h3>
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm mb-6">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Parameter</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Type</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">id</td>
+                <td class="px-4 py-3 text-gray-600">string (ObjectId)</td>
+                <td class="px-4 py-3 text-gray-500">The product's <code class="bg-gray-100 px-1 rounded">_id</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-gray-50 border-b border-gray-200 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Request</div>
+            <pre class="px-4 py-4 text-sm text-gray-700">curl https://my-app-production-f6bc.up.railway.app/v1/products/6650a1f2e4b0a1c2d3e4f5a6</pre>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-green-50 border-b border-green-200 px-4 py-2 flex items-center justify-between">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Response</span>
+              <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">200 OK</span>
+            </div>
+            <pre class="px-4 py-4 text-sm text-gray-700">{
+  "_id": "6650a1f2e4b0a1c2d3e4f5a6",
+  "name": "MacBook Pro",
+  "price": 1999,
+  "description": "Fast laptop",
+  "isActive": true,
+  "createdAt": "2026-05-15T10:00:00.000Z",
+  "updatedAt": "2026-05-15T10:00:00.000Z",
+  "__v": 0
+}</pre>
+          </div>
+        </div>
+        <p class="text-sm text-gray-500 mt-3">Returns <code class="bg-gray-100 px-1.5 py-0.5 rounded">null</code> with status <code class="bg-gray-100 px-1.5 py-0.5 rounded">200</code> when no product matches the given id.</p>
+      </section>
+
+      <!-- ── UPDATE ── -->
+      <section id="update">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="method-patch text-sm font-bold px-3 py-1 rounded-full">PATCH</span>
+          <code class="text-xl font-mono font-semibold text-gray-900">/v1/products/:id</code>
+        </div>
+        <p class="text-gray-600 mb-6">Partially update a product. Send only the fields you want to change — all fields are optional. Returns the updated document.</p>
+
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Request Body</h3>
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm mb-6">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Field</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Type</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Constraints</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">name</td>
+                <td class="px-4 py-3 text-gray-600">string</td>
+                <td class="px-4 py-3 text-gray-500">—</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">price</td>
+                <td class="px-4 py-3 text-gray-600">number</td>
+                <td class="px-4 py-3 text-gray-500">≥ 0</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">description</td>
+                <td class="px-4 py-3 text-gray-600">string</td>
+                <td class="px-4 py-3 text-gray-500">—</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">isActive</td>
+                <td class="px-4 py-3 text-gray-600">boolean</td>
+                <td class="px-4 py-3 text-gray-500">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-gray-50 border-b border-gray-200 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Request</div>
+            <pre class="px-4 py-4 text-sm text-gray-700">curl -X PATCH \
+  https://my-app-production-f6bc.up.railway.app/v1/products/6650a1f2e4b0a1c2d3e4f5a6 \
+  -H "Content-Type: application/json" \
+  -d '{"price": 1799}'</pre>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-green-50 border-b border-green-200 px-4 py-2 flex items-center justify-between">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Response</span>
+              <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">200 OK</span>
+            </div>
+            <pre class="px-4 py-4 text-sm text-gray-700">{
+  "_id": "6650a1f2e4b0a1c2d3e4f5a6",
+  "name": "MacBook Pro",
+  "price": 1799,
+  "description": "Fast laptop",
+  "isActive": true,
+  "createdAt": "2026-05-15T10:00:00.000Z",
+  "updatedAt": "2026-05-15T12:30:00.000Z",
+  "__v": 0
+}</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── DELETE ── -->
+      <section id="delete">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="method-delete text-sm font-bold px-3 py-1 rounded-full">DELETE</span>
+          <code class="text-xl font-mono font-semibold text-gray-900">/v1/products/:id</code>
+        </div>
+        <p class="text-gray-600 mb-6">Delete a product by its MongoDB ObjectId. Returns the deleted document.</p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-gray-50 border-b border-gray-200 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Request</div>
+            <pre class="px-4 py-4 text-sm text-gray-700">curl -X DELETE \
+  https://my-app-production-f6bc.up.railway.app/v1/products/6650a1f2e4b0a1c2d3e4f5a6</pre>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-green-50 border-b border-green-200 px-4 py-2 flex items-center justify-between">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Response</span>
+              <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">200 OK</span>
+            </div>
+            <pre class="px-4 py-4 text-sm text-gray-700">{
+  "_id": "6650a1f2e4b0a1c2d3e4f5a6",
+  "name": "MacBook Pro",
+  "price": 1799,
+  "description": "Fast laptop",
+  "isActive": true,
+  "createdAt": "2026-05-15T10:00:00.000Z",
+  "updatedAt": "2026-05-15T12:30:00.000Z",
+  "__v": 0
+}</pre>
+          </div>
+        </div>
+        <p class="text-sm text-gray-500 mt-3">Returns <code class="bg-gray-100 px-1.5 py-0.5 rounded">null</code> with status <code class="bg-gray-100 px-1.5 py-0.5 rounded">200</code> when no product matches the given id.</p>
+      </section>
+
+      <hr class="border-gray-200" />
+
+      <!-- ── SCHEMA ── -->
+      <section id="schema">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Product Schema</h2>
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Field</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Type</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Required</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Default</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Description</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">_id</td>
+                <td class="px-4 py-3 text-gray-600">ObjectId</td>
+                <td class="px-4 py-3">—</td>
+                <td class="px-4 py-3 text-gray-500">auto</td>
+                <td class="px-4 py-3 text-gray-500">MongoDB document ID</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">name</td>
+                <td class="px-4 py-3 text-gray-600">string</td>
+                <td class="px-4 py-3"><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">yes</span></td>
+                <td class="px-4 py-3 text-gray-500">—</td>
+                <td class="px-4 py-3 text-gray-500">Product name</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">price</td>
+                <td class="px-4 py-3 text-gray-600">number</td>
+                <td class="px-4 py-3"><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">yes</span></td>
+                <td class="px-4 py-3 text-gray-500">—</td>
+                <td class="px-4 py-3 text-gray-500">Product price (≥ 0)</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">description</td>
+                <td class="px-4 py-3 text-gray-600">string</td>
+                <td class="px-4 py-3"><span class="bg-gray-100 text-gray-600 text-xs font-semibold px-2 py-0.5 rounded-full">no</span></td>
+                <td class="px-4 py-3 text-gray-500">—</td>
+                <td class="px-4 py-3 text-gray-500">Optional description</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">isActive</td>
+                <td class="px-4 py-3 text-gray-600">boolean</td>
+                <td class="px-4 py-3"><span class="bg-gray-100 text-gray-600 text-xs font-semibold px-2 py-0.5 rounded-full">no</span></td>
+                <td class="px-4 py-3 text-gray-500">true</td>
+                <td class="px-4 py-3 text-gray-500">Active status</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">createdAt</td>
+                <td class="px-4 py-3 text-gray-600">Date</td>
+                <td class="px-4 py-3">—</td>
+                <td class="px-4 py-3 text-gray-500">auto</td>
+                <td class="px-4 py-3 text-gray-500">Creation timestamp</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-mono text-sky-700">updatedAt</td>
+                <td class="px-4 py-3 text-gray-600">Date</td>
+                <td class="px-4 py-3">—</td>
+                <td class="px-4 py-3 text-gray-500">auto</td>
+                <td class="px-4 py-3 text-gray-500">Last update timestamp</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── VALIDATION ── -->
+      <section id="validation">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Validation Rules</h2>
+        <p class="text-gray-600 mb-6">Applied globally via NestJS <code class="bg-gray-100 px-1.5 py-0.5 rounded text-sm">ValidationPipe</code>.</p>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-8">
+          <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <div class="bg-sky-100 text-sky-700 rounded-lg p-2 mt-0.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6z"/></svg>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-800">whitelist: true</p>
+                <p class="text-gray-500 text-sm mt-1">Strips any extra fields not declared in the DTO silently before processing.</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <div class="bg-red-100 text-red-700 rounded-lg p-2 mt-0.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-800">forbidNonWhitelisted: true</p>
+                <p class="text-gray-500 text-sm mt-1">Rejects the request with <code class="bg-gray-100 px-1 rounded">400</code> if unknown fields are present.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Common 400 Causes</h3>
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Mistake</th>
+                <th class="text-left px-4 py-3 font-semibold text-gray-600">Error Message</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 text-gray-700"><code class="bg-gray-100 px-1.5 rounded">name</code> sent as a number</td>
+                <td class="px-4 py-3 text-red-600 text-xs font-mono">name must be a string, name should not be empty</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 text-gray-700"><code class="bg-gray-100 px-1.5 rounded">price</code> sent as a string</td>
+                <td class="px-4 py-3 text-red-600 text-xs font-mono">price must be a number conforming to the specified constraints</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 text-gray-700"><code class="bg-gray-100 px-1.5 rounded">price</code> is negative</td>
+                <td class="px-4 py-3 text-red-600 text-xs font-mono">price must not be less than 0</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 text-gray-700">Unknown field sent (e.g. <code class="bg-gray-100 px-1.5 rounded">category</code>)</td>
+                <td class="px-4 py-3 text-red-600 text-xs font-mono">property category should not exist</td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 text-gray-700"><code class="bg-gray-100 px-1.5 rounded">isActive</code> sent as a string</td>
+                <td class="px-4 py-3 text-red-600 text-xs font-mono">isActive must be a boolean value</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="max-w-4xl mx-auto px-6 py-10 mt-8 border-t border-gray-200 text-center text-sm text-gray-400">
+      my-app API — v1 &mdash; Built with NestJS &amp; MongoDB
+    </footer>
+  </main>
+
+</body>
+</html>
