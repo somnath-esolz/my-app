@@ -1,98 +1,279 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# API Documentation
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+**Base URL:** `https://my-app-production-f6bc.up.railway.app`  
+**API Version Prefix:** `/v1`  
+**Database:** MongoDB (Mongoose)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Root
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### GET /
 
-## Project setup
+Health-check / greeting endpoint. Not versioned — available directly at `/`.
 
-```bash
-$ npm install
+**Response `200 OK`**
+```
+Hello World!
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## Products
 
-# watch mode
-$ npm run start:dev
+All product endpoints are prefixed with `/v1/products`.
 
-# production mode
-$ npm run start:prod
+### Product Object
+
+| Field | Type | Required | Default | Description |
+|---|---|---|---|---|
+| `_id` | string (ObjectId) | — | auto | MongoDB document ID |
+| `name` | string | yes | — | Product name |
+| `price` | number (≥ 0) | yes | — | Product price |
+| `description` | string | no | — | Optional product description |
+| `isActive` | boolean | no | `true` | Whether the product is active |
+| `createdAt` | string (ISO 8601) | — | auto | Creation timestamp |
+| `updatedAt` | string (ISO 8601) | — | auto | Last update timestamp |
+
+---
+
+### POST /v1/products
+
+Create a new product.
+
+**Request Headers**
+```
+Content-Type: application/json
 ```
 
-## Run tests
+**Request Body**
 
+| Field | Type | Required | Constraints |
+|---|---|---|---|
+| `name` | string | yes | Non-empty string |
+| `price` | number | yes | ≥ 0 |
+| `description` | string | no | — |
+| `isActive` | boolean | no | — |
+
+Extra fields not listed above are rejected (`forbidNonWhitelisted: true`).
+
+**Example Request**
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+curl -X POST https://my-app-production-f6bc.up.railway.app/v1/products \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "MacBook Pro",
+    "price": 1999,
+    "description": "Fast laptop",
+    "isActive": true
+  }'
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+**Response `201 Created`**
+```json
+{
+  "_id": "6650a1f2e4b0a1c2d3e4f5a6",
+  "name": "MacBook Pro",
+  "price": 1999,
+  "description": "Fast laptop",
+  "isActive": true,
+  "createdAt": "2026-05-15T10:00:00.000Z",
+  "updatedAt": "2026-05-15T10:00:00.000Z",
+  "__v": 0
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+**Error Responses**
 
-## Resources
+`400 Bad Request` — validation failed (e.g. `name` is a number, `price` is negative, unknown field sent)
+```json
+{
+  "statusCode": 400,
+  "message": [
+    "name must be a string",
+    "price must not be less than 0"
+  ],
+  "error": "Bad Request"
+}
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### GET /v1/products
 
-## Support
+Retrieve all products.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Example Request**
+```bash
+curl https://my-app-production-f6bc.up.railway.app/v1/products
+```
 
-## Stay in touch
+**Response `200 OK`**
+```json
+[
+  {
+    "_id": "6650a1f2e4b0a1c2d3e4f5a6",
+    "name": "MacBook Pro",
+    "price": 1999,
+    "description": "Fast laptop",
+    "isActive": true,
+    "createdAt": "2026-05-15T10:00:00.000Z",
+    "updatedAt": "2026-05-15T10:00:00.000Z",
+    "__v": 0
+  },
+  {
+    "_id": "6650a1f2e4b0a1c2d3e4f5a7",
+    "name": "iPhone 15",
+    "price": 999,
+    "description": "Smartphone",
+    "isActive": true,
+    "createdAt": "2026-05-15T11:00:00.000Z",
+    "updatedAt": "2026-05-15T11:00:00.000Z",
+    "__v": 0
+  }
+]
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Returns an empty array `[]` when no products exist.
 
-## License
+---
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### GET /v1/products/:id
+
+Retrieve a single product by its MongoDB ObjectId.
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `id` | string (ObjectId) | The product's `_id` |
+
+**Example Request**
+```bash
+curl https://my-app-production-f6bc.up.railway.app/v1/products/6650a1f2e4b0a1c2d3e4f5a6
+```
+
+**Response `200 OK`**
+```json
+{
+  "_id": "6650a1f2e4b0a1c2d3e4f5a6",
+  "name": "MacBook Pro",
+  "price": 1999,
+  "description": "Fast laptop",
+  "isActive": true,
+  "createdAt": "2026-05-15T10:00:00.000Z",
+  "updatedAt": "2026-05-15T10:00:00.000Z",
+  "__v": 0
+}
+```
+
+**Error Responses**
+
+`200 OK` with `null` body — product not found (Mongoose `findById` returns `null`).
+
+---
+
+### PATCH /v1/products/:id
+
+Partially update a product. Only send the fields you want to change — all fields are optional.
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `id` | string (ObjectId) | The product's `_id` |
+
+**Request Headers**
+```
+Content-Type: application/json
+```
+
+**Request Body**
+
+| Field | Type | Required | Constraints |
+|---|---|---|---|
+| `name` | string | no | — |
+| `price` | number | no | ≥ 0 |
+| `description` | string | no | — |
+| `isActive` | boolean | no | — |
+
+Extra fields not listed above are rejected.
+
+**Example Request** — update only the price
+```bash
+curl -X PATCH https://my-app-production-f6bc.up.railway.app/v1/products/6650a1f2e4b0a1c2d3e4f5a6 \
+  -H "Content-Type: application/json" \
+  -d '{"price": 1799}'
+```
+
+**Response `200 OK`** — returns the updated document
+```json
+{
+  "_id": "6650a1f2e4b0a1c2d3e4f5a6",
+  "name": "MacBook Pro",
+  "price": 1799,
+  "description": "Fast laptop",
+  "isActive": true,
+  "createdAt": "2026-05-15T10:00:00.000Z",
+  "updatedAt": "2026-05-15T12:30:00.000Z",
+  "__v": 0
+}
+```
+
+**Error Responses**
+
+`400 Bad Request` — validation failed.
+
+`200 OK` with `null` body — no product found with the given `id`.
+
+---
+
+### DELETE /v1/products/:id
+
+Delete a product by its MongoDB ObjectId.
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `id` | string (ObjectId) | The product's `_id` |
+
+**Example Request**
+```bash
+curl -X DELETE https://my-app-production-f6bc.up.railway.app/v1/products/6650a1f2e4b0a1c2d3e4f5a6
+```
+
+**Response `200 OK`** — returns the deleted document
+```json
+{
+  "_id": "6650a1f2e4b0a1c2d3e4f5a6",
+  "name": "MacBook Pro",
+  "price": 1799,
+  "description": "Fast laptop",
+  "isActive": true,
+  "createdAt": "2026-05-15T10:00:00.000Z",
+  "updatedAt": "2026-05-15T12:30:00.000Z",
+  "__v": 0
+}
+```
+
+`200 OK` with `null` body — no product found with the given `id`.
+
+---
+
+## Validation Rules Summary
+
+These rules are enforced globally via `ValidationPipe`:
+
+- `whitelist: true` — strips any fields not declared in the DTO silently.
+- `forbidNonWhitelisted: true` — rejects the request with `400` if unknown fields are present.
+
+### Common `400` Causes
+
+| Mistake | Error message |
+|---|---|
+| `name` sent as a number | `name must be a string`, `name should not be empty` |
+| `price` sent as a string | `price must not be less than 0`, `price must be a number` |
+| `price` is negative | `price must not be less than 0` |
+| Unknown field sent (e.g. `category`) | `property category should not exist` |
+| `isActive` sent as a string | `isActive must be a boolean value` |
